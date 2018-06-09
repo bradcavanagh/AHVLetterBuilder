@@ -1,12 +1,12 @@
 <div *ngIf="dataLoaded">
   <div class='container'>
     <div class='row'>
-        <div *ngIf="projectNotFound">
+        <div *ngIf="projectNotFound" class='col-xs-12 col-md-7'>
           <h4>Sorry, we don't have any active campaigns. Check back later, or
             <a href="https://twitter.com/yesinnewwest">follow us on Twitter</a>!
           </h4>
         </div>
-        <div *ngIf="!projectNotFound" class='col-xs-12 col-md-8'>
+        <div *ngIf="!projectNotFound" class='col-xs-12 col-md-7'>
         <h1>{{project.name}}</h1>
         <markdown>{{project.description}}</markdown>
         <form #letterForm="ngForm">
