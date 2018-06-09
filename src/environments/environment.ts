@@ -6,5 +6,6 @@
 export const environment = {
   production: false,
   googleSpreadsheetKey: '1qHENcVnwTpmZpxgCXMdyQo_z7b56PTSMIU_ZYBMloGs',
-  submitUrl: 'https://3vu3ve5hv9.execute-api.us-west-2.amazonaws.com/dev/submit'
+  submitUrl: 'https://3vu3ve5hv9.execute-api.us-west-2.amazonaws.com/dev/submit',
+  currentProject: 'no-project'
 };
