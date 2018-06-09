@@ -48,15 +48,14 @@ export class LetterBuilderComponent {
 
   ngOnInit(): void {
 
-    const defaultProjectId = 'qboro-tmh';
-
+    const currentProject = environment.currentProject
     this.dataService.init(() => {
       const projectId = this.getQueryParams(location.search)['p'];
       this.projectId = projectId;
       let proj = this.dataService.getProject(projectId);
       if (proj == null) {
         // try the default one.
-        proj = this.dataService.getProject(defaultProjectId);
+        proj = this.dataService.getProject(currentProject);
       }
       if (proj == null) {
         this.projectNotFound = true;
