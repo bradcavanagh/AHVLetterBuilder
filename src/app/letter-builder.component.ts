@@ -27,38 +27,42 @@ export class LetterBuilderComponent {
   customSupportReasons: CustomOption[];
   improvements: Option[];
   customImprovements: CustomOption[];
-  name: string = '';
-  emailAddress: string = '';
-  physicalAddress: string = '';
-  letterSubject: string = '';
-  letterBody: string = '';
-  joinMailingList: boolean = false;
-  dataLoaded: boolean = false;
-  letterSent: boolean = false;
-  demoMode: boolean = false;
-  projectNotFound: boolean = false;
-  staticEmail: boolean = false;
+  name = '';
+  emailAddress = '';
+  physicalAddress = '';
+  letterSubject = '';
+  letterBody = '';
+  pageURL= '';
+  joinMailingList = false;
+  dataLoaded = false;
+  letterSent = false;
+  demoMode = false;
+  projectFailedToLoad = false;
+  projectNotFound = false;
+  staticEmail = false;
 
   // text for display
-  sendLetterButtonText: string = 'Send Letter';
-  messageSentModalDialogHeader: string = '';
+  sendLetterButtonText = 'Send Letter';
+  messageSentModalDialogHeader = '';
   messageSentModalDialogBody = '';
 
   constructor(private dataService: DataService, private http: HttpClient) { }
 
   ngOnInit(): void {
 
-    const defaultProjectId = 'qboro-tmh';
-
+    const currentProject = environment.currentProject
     this.dataService.init(() => {
+      this.pageURL = location.href;
       const projectId = this.getQueryParams(location.search)['p'];
       this.projectId = projectId;
       let proj = this.dataService.getProject(projectId);
       if (proj == null) {
         // try the default one.
-        proj = this.dataService.getProject(defaultProjectId);
+        proj = this.dataService.getProject(currentProject);
       }
       if (proj == null) {
+        this.project = new Project('404', '404', ['nobody@nowhere.com'], '', '404', 'Project not found', [], '');
+        this.projectFailedToLoad = true;
         this.projectNotFound = true;
       }
 
