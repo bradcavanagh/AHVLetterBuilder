@@ -68,11 +68,11 @@ export class LetterBuilderComponent {
 
       if (!this.projectNotFound) {
         this.project = proj;
-        this.relationships = this.getApplicableOptionsForProject(this.project, this.dataService.getOptions(OptionType.Relationship));
-        this.supportReasons = this.getApplicableOptionsForProject(this.project, this.dataService.getOptions(OptionType.SupportReason));
-        this.recommendations = this.getApplicableOptionsForProject(this.project, this.dataService.getOptions(OptionType.Recommendation));
+        this.relationships = this.getApplicableOptionsForProject(this.project, this.dataService.getOptionsALT(OptionType.Relationship));
+        this.supportReasons = this.getApplicableOptionsForProject(this.project, this.dataService.getOptionsALT(OptionType.SupportReason));
+        this.recommendations = this.getApplicableOptionsForProject(this.project, this.dataService.getOptionsALT(OptionType.Recommendation));
         this.customSupportReasons = [];
-        this.improvements = this.getApplicableOptionsForProject(this.project, this.dataService.getOptions(OptionType.Improvement));
+        this.improvements = this.getApplicableOptionsForProject(this.project, this.dataService.getOptionsALT(OptionType.Improvement));
         this.customImprovements = [];
         this.staticEmail = this.project.fullEmail.length !== 0
       }
@@ -204,7 +204,7 @@ export class LetterBuilderComponent {
   }
 
   getTextFromBank(id: string): string {
-    return this.replaceTokens(this.dataService.getRandomTextBankEntry(id));
+    return this.replaceTokens(this.dataService.getRandomTextBankALTEntry(id));
   }
 
   getApplicableOptionsForProject(project: Project, allOptions: Option[]): Option[] {

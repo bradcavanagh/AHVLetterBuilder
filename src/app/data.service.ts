@@ -12,25 +12,29 @@ export class DataService {
 
   private projectCache: Project[];
   private optionCache: Option[];
+  private optionALTCache: Option[];
   private textBankCache: {[id: string]: string[]};
+  private textBankALTCache: {[id: string]: string[]};
 
   constructor() {
     this.projectCache = new Array<Project>();
     this.optionCache = new Array<Option>();
+    this.optionALTCache = new Array<Option>();
     this.textBankCache = {};
+    this.textBankALTCache = {};
   }
 
   init(callback: () => void) {
     Tabletop.init( { key: environment.googleSpreadsheetKey,
                    callback: (data, tabletop) => {
-                     this.parseSpreadsheetData(data, tabletop, this.projectCache, this.optionCache, this.textBankCache);
+                     this.parseSpreadsheetData(data, tabletop, this.projectCache, this.optionCache, this.optionALTCache, this.textBankCache, this.textBankALTCache);
                      callback();
                    } } );
   }
 
   // the cache parameters are dumb and shouldn't be necessary. For some reason I just couldn't get "this" to bind correctly in this method.
-  parseSpreadsheetData = (data: any, tabletop: any, 
-    projectCache: Project[], optionCache: Option[], textBankCache: {[id: string] : string[]}) => 
+  parseSpreadsheetData = (data: any, tabletop: any,
+    projectCache: Project[], optionCache: Option[], optionALTCache: Option[], textBankCache: {[id: string] : string[]}, textBankALTCache: {[id: string] : string[]}) =>
   {
     let projects = data['Projects'].all();
     projects.forEach(function(p){
@@ -44,7 +48,7 @@ export class DataService {
       let tags = (p["Tags"] as string).split(",");
       let fullEmail = p["Full Email"];
       let newProject = new Project(id, name, emailAddress, neighbourhood, description, address, tags, fullEmail);
-      projectCache.push(newProject); 
+      projectCache.push(newProject);
     });
 
     let options = data['Options'].all();
@@ -64,6 +68,24 @@ export class DataService {
       optionCache.push(newOption);
     });
 
+    let optionsALT = data['Options ALT'].all();
+    optionsALT.forEach(function(o){
+      // todo: read option data
+      const newOption = new Option();
+      newOption.type =  OptionType[o['Type'] as string];
+      newOption.id = o['ID'];
+      newOption.description = o['Description'];
+      const tags = o['Tags'] as string;
+      if (tags.trim() === '') {
+        newOption.tags = [];
+      }
+      else {
+        newOption.tags = (o['Tags'] as string).split(',');
+      }
+      optionALTCache.push(newOption);
+    });
+
+
     const textBank = data['Text Bank'].all();
     textBank.forEach(function(tb){
       const id = tb['ID'] as string;
@@ -74,6 +96,17 @@ export class DataService {
         textBankCache[id] = [text];
       }
     });
+
+    const textBankALT = data['Text Bank ALT'].all();
+    textBankALT.forEach(function(tb){
+      const id = tb['ID'] as string;
+      const text = tb['Text'] as string;
+      if(id in textBankALTCache) {
+        textBankALTCache[id].push(text);
+      } else {
+        textBankALTCache[id] = [text];
+      }
+    })
   }
 
   getProject(id: string): Project {
@@ -90,12 +123,22 @@ export class DataService {
   getOptions(type: OptionType): Option[]{
     return this.optionCache.filter(function(o){return o.type === type; });
   }
+
+  getOptionsALT(type: OptionType): Option[]{
+    return this.optionALTCache.filter(function(o){return o.type === type; });
+  }
+
   getRandomTextBankEntry(id: string): string {
     const sentences = this.textBankCache[id];
     return RandomHelper.RandomString(sentences);
   }
 
-    getRandomBulletPoint(): string{
+  getRandomTextBankALTEntry(id: string): string {
+    const sentences = this.textBankALTCache[id];
+    return RandomHelper.RandomString(sentences);
+  }
+
+  getRandomBulletPoint(): string{
     const options = ['-', '•'];
     return RandomHelper.RandomString(options);
   }
